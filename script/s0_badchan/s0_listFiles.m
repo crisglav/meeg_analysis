@@ -1,10 +1,14 @@
+% Script that lists all the raw MEG files in project/data/raw/ and prepares
+% metadata in project/meta/bad
+
 clc
 clear
 close all
 
 % Sets the paths.
-config.path.raw  = '../../data/raw/';
-config.path.meta = '../../meta/bad/';
+config.path.project_root = '/home/cgil/megtusalen_data';
+config.path.raw  = [config.path.project_root, '/data/raw/'];
+config.path.meta = [config.path.project_root, '/meta/bad/'];
 config.path.patt = '*.fif';
 
 % Action when the task has already been processed.
@@ -15,8 +19,8 @@ addpath ( sprintf ( '%s/functions/', fileparts ( pwd ) ) );
 addpath ( sprintf ( '%s/mne_silent/', fileparts ( pwd ) ) );
 
 % Adds, if needed, the FieldTrip folder to the path.
+addpath ( '/home/cgil/repos/fieldtrip-20200130')
 myft_path
-
 
 % Creates the output folder, if required.
 if ~exist ( config.path.meta, 'dir' ), mkdir ( config.path.meta ); end
