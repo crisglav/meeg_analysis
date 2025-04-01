@@ -1,9 +1,19 @@
+% Script to select manually broken MEG channels before MaxFilter. It reads
+% metadata from project/meta/bad/ and updates the meta structure for each 
+% recording with the field 'bad' indicating manually selected bad channels.
+%
+% The visualization of raw data is based on a modified fieldtrip function
+% called ft_databrowser. By default magnetometers are blue, gradiometers
+% are red, EEG channels are orange, and EOG, ECG and EMG purple.
+
 clc
 clear
 close all
 
 % Sets the paths.
-config.path.meta = 'C:\Users\Cristina\megtusalen-mini\meta\bad\';
+% config.path.project_root = '/home/cgil/megtusalen_data';
+config.path.project_root = 'C:\Users\Cristina\megtusalen-mini\';
+config.path.meta = fullfile(config.path.project_root, 'meta', 'bad');
 config.path.patt = '*.mat';
 
 % Sets the visualization configuration parameters.
