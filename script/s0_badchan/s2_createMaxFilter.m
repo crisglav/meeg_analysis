@@ -3,9 +3,9 @@ clear
 close all
 
 % Sets the paths.
-config.path.bad  = '../../meta/bad/';
+config.path.bad  = 'C:\Users\Cristina\megtusalen-mini\meta\bad\';
 config.path.patt = '*.mat';
-config.path.file = '../../meta/badchannels.mat';
+config.path.file = 'C:\Users\Cristina\megtusalen-mini\meta\badchannels.mat';
 
 % Creates the output folder, if required.
 if ~exist ( fileparts ( config.path.file ), 'dir' ), mkdir ( fileparts ( config.path.file ) ); end

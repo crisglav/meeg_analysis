@@ -3,7 +3,7 @@ clear
 close all
 
 % Sets the paths.
-config.path.meta = '../../meta/bad/';
+config.path.meta = 'C:\Users\Cristina\megtusalen-mini\meta\bad\';
 config.path.patt = '*.mat';
 
 % Sets the visualization configuration parameters.
@@ -32,7 +32,7 @@ addpath ( sprintf ( '%s/functions/', fileparts ( pwd ) ) );
 addpath ( sprintf ( '%s/mne_silent/', fileparts ( pwd ) ) );
 
 % Adds, if needed, the FieldTrip folder to the path.
-myft_path
+myft_path  ( 'C:\Users\Cristina\repos\fieldtrip\' ) 
 
 
 % Lists the files.
@@ -149,7 +149,7 @@ for findex = 1: numel ( files )
     cfg.badchan         = meta.bad;
     cfg.selectmode      = 'markbadchannel';
     cfg.projinfo        = header.orig.projs;
-    cfg.applyprojector  = true;
+    cfg.applyprojector  = false;
     
     cfg                 = my_databrowser ( cfg, trialdata );
     

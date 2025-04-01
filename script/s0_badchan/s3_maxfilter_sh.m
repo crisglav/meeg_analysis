@@ -14,7 +14,7 @@ close all
 %   files.errfile - The error file specific for this file (optional).
 
 % Name of the files' structure file.
-input    = '../../meta/badchannels.mat';
+input    = 'C:\Users\Cristina\megtusalen-mini\meta\badchannels.mat';
 
 % Folder options.
 indir    = '/neuro/data/Current_github/data/raw/';

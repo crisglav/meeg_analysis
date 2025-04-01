@@ -3,8 +3,8 @@ clear
 close all
 
 % Sets the paths.
-config.path.raw  = '../../data/raw/';
-config.path.meta = '../../meta/bad/';
+config.path.raw  = 'C:\Users\Cristina\megtusalen-mini\raw\';
+config.path.meta = 'C:\Users\Cristina\megtusalen-mini\meta\bad\';
 config.path.patt = '*.fif';
 
 % Action when the task has already been processed.
@@ -15,7 +15,7 @@ addpath ( sprintf ( '%s/functions/', fileparts ( pwd ) ) );
 addpath ( sprintf ( '%s/mne_silent/', fileparts ( pwd ) ) );
 
 % Adds, if needed, the FieldTrip folder to the path.
-myft_path
+myft_path ( 'C:\Users\Cristina\repos\fieldtrip\' ) 
 
 
 % Creates the output folder, if required.
