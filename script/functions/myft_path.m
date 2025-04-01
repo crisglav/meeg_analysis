@@ -1,8 +1,15 @@
-function myft_path
+function myft_path(varargin)
 
-% Looks for FieldTrip in the parent folder.
-ft_path = dir ( sprintf ( '%s/fieldtrip*', fileparts ( pwd ) ) );
-ft_path = ft_path ( [ ft_path.isdir ] );
+if isscalar(varargin)
+    % User-defined Fieldtrip path
+    ft_path = varargin{1};
+
+else
+    % Looks for FieldTrip in the parent folder.
+    ft_path = dir ( sprintf ( '%s/fieldtrip*', fileparts ( pwd ) ) );
+    ft_path = ft_path ( [ ft_path.isdir ] );
+    ft_path = sprintf ( '%s/%s/', fileparts ( pwd ), ft_path ( end ).name );
+end
 
 % Search for a version of FiedlTrip in the path.
 if ~isempty ( which ( 'ft_defaults' ) )
@@ -11,7 +18,7 @@ if ~isempty ( which ( 'ft_defaults' ) )
     
 % Adds, if any version, FieldTrip to the path.
 elseif numel ( ft_path )
-    addpath ( sprintf ( '%s/%s/', fileparts ( pwd ), ft_path ( end ).name ) )
+    addpath ( ft_path )
     
 % Otherwise exits with an error.
 else
