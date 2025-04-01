@@ -5,9 +5,15 @@ clc
 clear
 close all
 
-% Sets the paths.
-% config.path.project_root = '/home/cgil/megtusalen_data';
-config.path.project_root = 'C:\Users\Cristina\megtusalen-mini\';
+% Read paths from json file
+fid = fopen('../../config.json');
+raw = fread(fid,inf);
+str = char(raw');
+fclose(fid);
+config.path = jsondecode(str);
+
+
+% Sets the paths
 config.path.raw  = fullfile(config.path.project_root, 'data' ,'raw');
 config.path.meta = fullfile(config.path.project_root, 'meta', 'bad');
 config.path.patt = '*.fif';
@@ -20,12 +26,7 @@ addpath ( sprintf ( '%s/functions/', fileparts ( pwd ) ) );
 addpath ( sprintf ( '%s/mne_silent/', fileparts ( pwd ) ) );
 
 % Adds, if needed, the FieldTrip folder to the path.
-<<<<<<< HEAD
-myft_path ( 'C:\Users\Cristina\repos\fieldtrip\' ) 
-=======
-addpath ( '/home/cgil/repos/fieldtrip-20200130')
-myft_path
->>>>>>> 739164484d7069b961b580c70cb801089bdad65e
+myft_path ( config.path.ft_path ) 
 
 % Creates the output folder, if required.
 if ~exist ( config.path.meta, 'dir' ), mkdir ( config.path.meta ); end

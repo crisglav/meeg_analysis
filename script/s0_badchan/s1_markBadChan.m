@@ -10,9 +10,14 @@ clc
 clear
 close all
 
+% Read paths from json file
+fid = fopen('../../config.json');
+raw = fread(fid,inf);
+str = char(raw');
+fclose(fid);
+config.path = jsondecode(str);
+
 % Sets the paths.
-% config.path.project_root = '/home/cgil/megtusalen_data';
-config.path.project_root = 'C:\Users\Cristina\megtusalen-mini\';
 config.path.meta = fullfile(config.path.project_root, 'meta', 'bad');
 config.path.patt = '*.mat';
 
@@ -42,11 +47,11 @@ addpath ( sprintf ( '%s/functions/', fileparts ( pwd ) ) );
 addpath ( sprintf ( '%s/mne_silent/', fileparts ( pwd ) ) );
 
 % Adds, if needed, the FieldTrip folder to the path.
-myft_path  ( 'C:\Users\Cristina\repos\fieldtrip\' ) 
+myft_path  ( config.path.ft_path ) 
 
 
 % Lists the files.
-files = dir ( sprintf ( '%s%s', config.path.meta, config.path.patt ) );
+files = dir ( fullfile( config.path.meta, config.path.patt ) );
     
 % Goes through each file.
 for findex = 1: numel ( files )
