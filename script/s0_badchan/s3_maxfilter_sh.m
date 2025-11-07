@@ -13,16 +13,23 @@ close all
 %   files.logfile - The log file specific for this file (optional).
 %   files.errfile - The error file specific for this file (optional).
 
+% Read paths from json file
+fid = fopen(fullfile('..','..','config.json'));
+raw = fread(fid,inf);
+str = char(raw');
+fclose(fid);
+config.path = jsondecode(str);
+
 % Name of the files' structure file.
-input    = 'C:\Users\Cristina\megtusalen-mini\meta\badchannels.mat';
+input    = fullfile(config.path.project_root, 'meta', 'badchannels.mat');
 
 % Folder options.
-indir    = '/neuro/data/Current_github/data/raw/';
-outdir   = '/neuro/data/Current_github/data/tsss/';
-logdir   = '/neuro/data/Current_github/data/tsss/';
+indir    = '/neuro/data/data/raw/';
+outdir   = '/neuro/data/data/tsss/';
+logdir   = '/neuro/data/data/tsss/';
 
 % Computer where the Maxfilter is going to be applied ('elekta' or other).
-computer = '';
+computer = 'elekta';
 
 % MaxFilter options (first run).
 configs (1).inner    = 8;           % SSS inner expansion order.      Between 5 and 11 (default 8)
