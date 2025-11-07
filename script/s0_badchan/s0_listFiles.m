@@ -6,7 +6,7 @@ clear
 close all
 
 % Read paths from json file
-fid = fopen('../../config.json');
+fid = fopen(fullfile('..','..','config.json'));
 raw = fread(fid,inf);
 str = char(raw');
 fclose(fid);
@@ -22,8 +22,8 @@ config.path.patt = '*.fif';
 config.overwrite = false;
 
 % Adds the functions folders to the path.
-addpath ( sprintf ( '%s/functions/', fileparts ( pwd ) ) );
-addpath ( sprintf ( '%s/mne_silent/', fileparts ( pwd ) ) );
+addpath(fullfile(fileparts(pwd),'functions'));
+addpath(fullfile(fileparts(pwd),'mne_silent'));
 
 % Adds, if needed, the FieldTrip folder to the path.
 myft_path ( config.path.ft_path ) 
@@ -32,13 +32,14 @@ myft_path ( config.path.ft_path )
 if ~exist ( config.path.meta, 'dir' ), mkdir ( config.path.meta ); end
 
 % Makes a deep look for files.
-files  = my_deepfind ( config.path.raw, config.path.patt );
+files = dir(fullfile(config.path.raw,config.path.patt));
+% files  = my_deepfind ( config.path.raw, config.path.patt );
 
 % Goes through each file.
 for findex = 1: numel ( files )
     
     % (Nebre) Checks if the file already exists.
-    if exist ( sprintf ( '%s%s.mat', config.path.meta, files ( findex ).name ), 'file' )&&~config.overwrite
+    if exist ( fullfile( config.path.meta, files ( findex ).name ), 'file' ) && ~config.overwrite
         warning ( 'Ignoring %s (already extracted).', files ( findex ).name )
         continue
     end
@@ -46,7 +47,7 @@ for findex = 1: numel ( files )
     fprintf ( 1, 'Reading metadata from %s.\n', files ( findex ).name );
     
     % Defines the dataset.
-    file   = sprintf ( '%s%s', files ( findex ).folder, files ( findex ).name );
+    file   = fullfile( files ( findex ).folder, files ( findex ).name );
     
     % Gets the file metadata.
     header = my_read_header ( file );
@@ -60,5 +61,6 @@ for findex = 1: numel ( files )
     meta.bad    = [];
     
     % Saves the data.
-    save ( '-v6', sprintf ( '%s%s.mat', config.path.meta, files ( findex ).name ), '-struct', 'meta' )
+    [~, filename, ~] = fileparts(file);
+    save ( '-v6', fullfile ( config.path.meta, filename ) , '-struct', 'meta' )
 end
