@@ -59,8 +59,10 @@ for findex = 1: numel ( files )
     meta.header = header;
     meta.event  = event;
     meta.bad    = [];
+
+    % Removes the extension from file name.
+    [ ~, filename ]  = fileparts ( fileinfo.file );
     
     % Saves the data.
-    [~, filename, ~] = fileparts(file);
     save ( '-v6', fullfile ( config.path.meta, filename ) , '-struct', 'meta' )
 end

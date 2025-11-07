@@ -11,7 +11,7 @@ clear
 close all
 
 % Read paths from json file
-fid = fopen('../../config.json');
+fid = fopen(fullfile('..','..','config.json'));
 raw = fread(fid,inf);
 str = char(raw');
 fclose(fid);
@@ -43,8 +43,8 @@ config.filter.band    = [ 2 45 ]; % [ 2 95 ];
 config.overwrite      = true;
 
 % Adds the functions folders to the path.
-addpath ( sprintf ( '%s/functions/', fileparts ( pwd ) ) );
-addpath ( sprintf ( '%s/mne_silent/', fileparts ( pwd ) ) );
+addpath(fullfile(fileparts(pwd),'functions'));
+addpath(fullfile(fileparts(pwd),'mne_silent'));
 
 % Adds, if needed, the FieldTrip folder to the path.
 myft_path  ( config.path.ft_path ) 
@@ -59,7 +59,7 @@ for findex = 1: numel ( files )
     fprintf ( 1, 'Working with file %s.\n', files ( findex ).name );
     
     % Loads the current file.
-    meta     = load ( sprintf ( '%s%s', config.path.meta, files ( findex ).name ) );
+    meta     = load ( fullfile(config.path.meta, files ( findex ).name ) );
     if numel(meta.bad) &&  ~config.overwrite
         warning ( 'Ignoring %s (bad channels already present).', files ( findex ).name )
         continue
@@ -172,5 +172,5 @@ for findex = 1: numel ( files )
     meta.bad            = cfg.badchan;
     
     % Saves the meta data.
-    save ( '-v6', sprintf ( '%s%s', config.path.meta, files ( findex ).name ), '-struct', 'meta' );
+    save ( '-v6', fullfile( config.path.meta, files ( findex ).name ), '-struct', 'meta' );
 end

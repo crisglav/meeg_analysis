@@ -2,17 +2,23 @@ clc
 clear
 close all
 
+% Read paths from json file
+fid = fopen(fullfile('..','..','config.json'));
+raw = fread(fid,inf);
+str = char(raw');
+fclose(fid);
+config.path = jsondecode(str);
+
 % Sets the paths.
-config.path.bad  = 'C:\Users\Cristina\megtusalen-mini\meta\bad\';
+config.path.bad = fullfile(config.path.project_root, 'meta', 'bad');
 config.path.patt = '*.mat';
-config.path.file = 'C:\Users\Cristina\megtusalen-mini\meta\badchannels.mat';
+config.path.file = fullfile(config.path.project_root, 'meta', 'badchannels.mat');
 
 % Creates the output folder, if required.
 if ~exist ( fileparts ( config.path.file ), 'dir' ), mkdir ( fileparts ( config.path.file ) ); end
 
-
 % Lists the files.
-files = dir ( sprintf ( '%s%s', config.path.bad, config.path.patt ) );
+files = dir ( fullfile ( config.path.bad, config.path.patt ) );
 
 % Initializes the file information variable.
 fileinfos = cell ( numel ( files ), 1 );
@@ -23,7 +29,7 @@ for findex = 1: numel ( files )
     fprintf ( 1, 'Working with file %s.\n', files ( findex ).name );
     
     % Loads the file information.
-    fileinfo         = load ( sprintf ( '%s%s', config.path.bad, files ( findex ).name ) );
+    fileinfo         = load ( fullfile ( config.path.bad, files ( findex ).name ) );
     
     % Removes the folder and the extension.
     [ ~, filename ]  = fileparts ( fileinfo.file );
