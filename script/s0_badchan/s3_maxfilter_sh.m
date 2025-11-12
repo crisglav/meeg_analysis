@@ -50,7 +50,7 @@ configs (1).hpistep  = 10;          % Step for the sliding window.    Number of 
 configs (1).hpisubt  = 'off';       % HPI coils signal removed.       'amp', 'line' or 'off' (default 'amp');
 configs (1).hpfile   = false;       % File to store head positions.   String (default original filename with extension '.pos')
 
-configs (1).cal      = '/neuro/data/cal/sss_cal_3058_20180913.dat'; % Fine calibration file
+configs (1).cal      = '/neuro/databases/sss/sss_cal_20120831.dat'; % Fine calibration file
 configs (1).ctc      = '/neuro/databases/ctc/ct_sparse_orion.fif'; % Crosstalk correction file
 
 configs (1).force    = true;        % Ignore warnings.                true or false (default false)

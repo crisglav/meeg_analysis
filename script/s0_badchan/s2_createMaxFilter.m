@@ -65,7 +65,7 @@ for findex = 1: numel ( fileinfos )
     
     % Defines the calibration file using the acquisition date.
     if filedate >= datetime ( 2018, 9, 13 )
-        calfile = '/neuro/data/cal/sss_cal_3058_20180913.dat';
+        calfile = '/neuro/databases/sss/sss_cal_3058_20180913.dat';
     else
         calfile = '/neuro/databases/sss/sss_cal_20120831.dat';
     end
