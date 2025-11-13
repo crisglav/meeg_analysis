@@ -2,9 +2,16 @@ clc
 clear
 close all
 
+% Read paths from json file
+fid = fopen(fullfile('..','..','config.json'));
+raw = fread(fid,inf);
+str = char(raw');
+fclose(fid);
+config.path = jsondecode(str);
+
 % Sets the paths.
-config.path.raw       = '../../data/tsss/';
-config.path.out       = '../../meta/trl/';
+config.path.raw = fullfile(config.path.project_root, 'data', 'tsss');
+config.path.out = fullfile(config.path.project_root, 'meta', 'trl');
 
 % Action when the task has already been processed.
 config.overwrite      = false;
@@ -27,10 +34,11 @@ config.physio.EMG     = {};
 % 
 % A regular expression can be provided to group files by subject and task.
 
-config.path.files     = '../../meta/times.mat';
+% config.path.files     = '../../meta/times.mat';
+config.path.files = false;
 
 % Sets the regular expression to match {subject}, {task} and {stage}.
-config.path.regexp    = '^(S[0-9]{2})_(task)().fif$';
+config.path.regexp = '^(fam_[0-9]{3})_([A-Za-z]+)_([A-Za-z0-9]+)\.fif$';
 
 % Otherwise sets the file pattern.
 config.path.patt      = '*.fif';
@@ -59,11 +67,11 @@ config.interactive    = 'no';
 if ~exist ( config.path.out, 'dir' ), mkdir ( config.path.out ); end
 
 % Adds the functions folders to the path.
-addpath ( sprintf ( '%s/functions/', fileparts ( pwd ) ) );
-addpath ( sprintf ( '%s/mne_silent/', fileparts ( pwd ) ) );
+addpath(fullfile(fileparts(pwd),'functions'));
+addpath(fullfile(fileparts(pwd),'mne_silent'));
 
 % Adds, if needed, the FieldTrip folder to the path.
-myft_path
+myft_path ( config.path.ft_path ) 
 
 
 % If files definition, loads the files defined there.
@@ -76,7 +84,7 @@ if config.path.files
 elseif config.path.regexp
     
     % Gets the list of filenames.
-    hits     = dir ( sprintf ( '%s%s', config.path.raw, config.path.patt ) );
+    hits     = dir ( fullfile( config.path.raw, config.path.patt ) );
     hits     = { hits.name };
     
     % Search for the regular expression in the file names.
@@ -156,7 +164,7 @@ for sindex = 1: numel ( subjects )
             
             
             % Sets the output file name.
-            outname   = sprintf ( '%s%s_%s%s.mat', config.path.out, subject, task, stage );
+            outname   = fullfile ( config.path.out, sprintf ('%s_%s_%s', subject, task, stage ) );
             
             % Gets the message name of the subject-task-stage set.
             msgtext   = sprintf ( 'task ''%s''', task );
@@ -185,7 +193,7 @@ for sindex = 1: numel ( subjects )
                 
                 % Gets the file name.
                 filename             = tfiles ( findex ).dataset;
-                dataset              = sprintf ( '%s%s', config.path.raw, filename );
+                dataset              = fullfile ( config.path.raw, filename );
                 begtime              = tfiles ( findex ).begtime;
                 endtime              = tfiles ( findex ).endtime;
                 
