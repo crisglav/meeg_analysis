@@ -2,8 +2,15 @@ clc
 clear
 close all
 
+% Adds the functions folders to the path.
+addpath( fullfile ( fileparts (pwd), 'functions' ) );
+addpath( fullfile ( fileparts (pwd), 'mne_silent' ) );
+
+% Read config from json file
+config = load_config( fullfile('..','..','config_s1.json') );
+
 % Sets the paths.
-config.path.trl       = '../../meta/trl/';
+config.path.trl = fullfile( config.path.project_root, 'meta', 'trl');
 config.path.patt      = '*.mat';
 
 % Action when the task have already been processed.
@@ -25,22 +32,17 @@ config.channel.ignore = {};
 % Sets the filter band.
 config.filter.band    = [ 2 45 ];
 
-
-% Adds the functions folders to the path.
-addpath ( sprintf ( '%s/functions/', fileparts ( pwd ) ) );
-addpath ( sprintf ( '%s/mne_silent/', fileparts ( pwd ) ) );
-
 % Adds, if needed, the FieldTrip folder to the path.
-myft_path
+myft_path ( config.path.ft_path )
 
 
 % Gets the list of taks files.
-files = dir ( sprintf ( '%s%s', config.path.trl, config.path.patt ) );
+files = dir ( fullfile ( config.path.trl, config.path.patt ) );
 
 % Goes through each subject and task.
 for sindex = 1: numel ( files )
     filename          = files ( sindex ).name;
-    filename          = sprintf ( '%s%s', config.path.trl, filename );
+    filename          = fullfile ( config.path.trl, filename );
     
     % Loads the current task information.
     taskinfo          = load ( filename );
