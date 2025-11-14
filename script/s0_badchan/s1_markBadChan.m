@@ -10,15 +10,15 @@ clc
 clear
 close all
 
-% Read paths from json file
-fid = fopen(fullfile('..','..','config.json'));
-raw = fread(fid,inf);
-str = char(raw');
-fclose(fid);
-config.path = jsondecode(str);
+% Adds the functions folders to the path.
+addpath( fullfile ( fileparts (pwd), 'functions' ) );
+addpath( fullfile ( fileparts (pwd), 'mne_silent' ) );
+
+% Read config from json file
+config = load_config( fullfile('..','..','config_s0.json') );
 
 % Sets the paths.
-config.path.meta = fullfile(config.path.project_root, 'meta', 'bad');
+config.path.meta = fullfile ( config.path.project_root, 'meta', 'bad');
 config.path.patt = '*.mat';
 
 % Sets the visualization configuration parameters.
@@ -40,11 +40,8 @@ config.channel.hide   = 'zeros';
 config.filter.band    = [ 2 45 ]; % [ 2 95 ];
 
 % Action when the task have already been processed.
-config.overwrite      = true;
+config.overwrite      = false;
 
-% Adds the functions folders to the path.
-addpath(fullfile(fileparts(pwd),'functions'));
-addpath(fullfile(fileparts(pwd),'mne_silent'));
 
 % Adds, if needed, the FieldTrip folder to the path.
 myft_path  ( config.path.ft_path ) 

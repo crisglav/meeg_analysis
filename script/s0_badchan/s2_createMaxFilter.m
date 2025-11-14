@@ -2,12 +2,8 @@ clc
 clear
 close all
 
-% Read paths from json file
-fid = fopen(fullfile('..','..','config.json'));
-raw = fread(fid,inf);
-str = char(raw');
-fclose(fid);
-config.path = jsondecode(str);
+% Read config from json file
+config = load_config( fullfile('..','..','config_s0.json') );
 
 % Sets the paths.
 config.path.bad = fullfile(config.path.project_root, 'meta', 'bad');

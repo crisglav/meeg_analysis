@@ -13,12 +13,8 @@ close all
 %   files.logfile - The log file specific for this file (optional).
 %   files.errfile - The error file specific for this file (optional).
 
-% Read paths from json file
-fid = fopen(fullfile('..','..','config.json'));
-raw = fread(fid,inf);
-str = char(raw');
-fclose(fid);
-config.path = jsondecode(str);
+% Read config from json file
+config = load_config( fullfile('..','..','config_s0.json') );
 
 % Name of the files' structure file.
 input    = fullfile(config.path.project_root, 'meta', 'badchannels.mat');
