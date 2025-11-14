@@ -2,16 +2,16 @@ clc
 clear
 close all
 
-% Read paths from json file
-fid = fopen(fullfile('..','..','config.json'));
-raw = fread(fid,inf);
-str = char(raw');
-fclose(fid);
-config.path = jsondecode(str);
+% Adds the functions folders to the path.
+addpath( fullfile ( fileparts (pwd), 'functions' ) );
+addpath( fullfile ( fileparts (pwd), 'mne_silent' ) );
+
+% Read config from json file
+config = load_config( fullfile('..','..','config_s1.json') );
 
 % Sets the paths.
-config.path.raw = fullfile(config.path.project_root, 'data', 'tsss');
-config.path.out = fullfile(config.path.project_root, 'meta', 'trl');
+config.path.raw = fullfile( config.path.project_root, 'data', 'tsss');
+config.path.out = fullfile( config.path.project_root, 'meta', 'trl');
 
 % Action when the task has already been processed.
 config.overwrite      = false;
@@ -21,6 +21,9 @@ config.physio.EOG     = { 'EEG061' };
 config.physio.EKG     = { 'EEG062' };
 config.physio.EMG     = {};
 
+
+% Adds, if needed, the FieldTrip folder to the path.
+myft_path ( config.path.ft_path )
 
 % The 'files' file is defined as a structure with fields:
 % - dataset - File to load. Must be located in 'path.raw'.
@@ -34,11 +37,11 @@ config.physio.EMG     = {};
 % 
 % A regular expression can be provided to group files by subject and task.
 
-% config.path.files     = '../../meta/times.mat';
-config.path.files = false;
-
-% Sets the regular expression to match {subject}, {task} and {stage}.
-config.path.regexp = '^(fam_[0-9]{3})_([A-Za-z]+)_([A-Za-z0-9]+)\.fif$';
+% % config.path.files     = '../../meta/times.mat';
+% config.path.files = false;
+% 
+% % Sets the regular expression to match {subject}, {task} and {stage}.
+% config.path.regexp = '^(fam_[0-9]{3})_([A-Za-z]+)_([A-Za-z0-9]+)\.fif$';
 
 % Otherwise sets the file pattern.
 config.path.patt      = '*.fif';

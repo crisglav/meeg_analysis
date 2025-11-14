@@ -1,0 +1,8 @@
+{
+  "path": {
+    "ft_path": "C:\\Users\\Cristina\\repos\\fieldtrip-20200130",
+    "project_root": "C:\\Users\\Cristina\\megtusalen-mini",    
+    "files": false,
+    "regexp": "^(fam_[0-9]{3})_([A-Za-z]+)_([A-Za-z0-9]+)\\.fif$"
+  }
+}
