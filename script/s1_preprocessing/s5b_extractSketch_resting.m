@@ -2,14 +2,20 @@ clc
 clear
 close all
 
+% Adds the functions folders to the path.
+addpath( fullfile ( fileparts (pwd), 'functions' ) );
+addpath( fullfile ( fileparts (pwd), 'mne_silent' ) );
+
+% Read config from json file
+config = load_config( fullfile('..','..','config_s1.json') );
+
 % Sets the paths.
-config.path.trl       = '../../meta/trl/';
-config.path.sketch    = '../../data/sketch/';
+config.path.trl = fullfile( config.path.project_root, 'meta', 'trl');
+config.path.sketch = fullfile( config.path.project_root, 'data', 'sketch');
 config.path.patt      = '*.mat';
 
 % Action when the task have already been processed.
 config.overwrite      = false;
-
 
 % Sets the segmentation options.
 config.trialfun       = 'restingSegmentation';
@@ -27,23 +33,18 @@ config.channel.ignore = {};
 % Creates the output folder, if needed.
 if ~exist ( config.path.sketch, 'dir' ), mkdir ( config.path.sketch ); end
 
-
-% Adds the functions folders to the path.
-addpath ( sprintf ( '%s/functions/', fileparts ( pwd ) ) );
-addpath ( sprintf ( '%s/mne_silent/', fileparts ( pwd ) ) );
-
 % Adds, if needed, the FieldTrip folder to the path.
-myft_path
+myft_path ( config.path.ft_path )
 
 
 % Gets the list of task files.
-files = dir ( sprintf ( '%s%s', config.path.trl, config.path.patt ) );
+files = dir ( fullfile ( config.path.trl, config.path.patt ) );
 
 % Goes through each subject and task.
 for sindex = 1: numel ( files )
     
     filename            = files ( sindex ).name;
-    filename            = sprintf ( '%s%s', config.path.trl,  filename );
+    filename            = fullfile ( config.path.trl,  filename );
     
     % Loads the independent component definition.
     taskinfo            = load ( filename );
@@ -273,7 +274,7 @@ for sindex = 1: numel ( files )
     for chindex = 1: numel ( config.channel.groups )
         
         channel             = config.channel.groups { chindex };
-        outname             = sprintf ( '%s%s_%s%s_%s.mat', config.path.sketch, taskinfo.subject, taskinfo.task, taskinfo.stage, channel );
+        outname             = fullfile( config.path.sketch, sprintf ( '%s_%s_%s_%s.mat', taskinfo.subject, taskinfo.task, taskinfo.stage, channel ) );
         
         if exist ( outname, 'file' ) && ~config.overwrite
             fprintf ( 1, '  Ignoring channel group ''%s'' (already calculated).\n', channel );

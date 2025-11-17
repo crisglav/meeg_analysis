@@ -51,8 +51,11 @@ function s6_selectICsAndTrials_OpeningFcn ( hObject, eventdata, handles, varargi
 
 clc
 
+% Read config from json file
+config = load_config( fullfile('..','..','config_s1.json') );
+
 % Sets the paths.
-config.path.segs      = '../../data/sketch/';
+config.path.segs = fullfile( config.path.project_root, 'data', 'sketch');
 config.path.patt      = '*.mat';
 
 % Sets the configuration parameters.
@@ -67,10 +70,10 @@ set ( elements, 'BackgroundColor', get ( hObject,  'Color' ) )
 
 
 % Adds the functions folders to the path.
-addpath ( sprintf ( '%s/functions/', fileparts ( pwd ) ) );
+addpath( fullfile ( fileparts (pwd), 'functions' ) );
 
 % Adds, if needed, the FieldTrip folder to the path.
-myft_path
+myft_path ( config.path.ft_path )
 
 
 % Fills the list of IC and trial types.
@@ -82,7 +85,7 @@ set ( handles.popupTrialType, 'String', config.trialtypes );
 
 
 % Gets the list of data files.
-filenames = dir ( sprintf ( '%s%s', config.path.segs, config.path.patt ) );
+filenames = dir ( fullfile ( config.path.segs, config.path.patt ) );
 
 handles.data.folder   = config.path.segs;
 handles.data.filename = { filenames.name }';
@@ -283,7 +286,7 @@ current   = handles.data.current;
 
 % Loads data for the current subject.
 filename  = handles.data.filename { current };
-filename  = sprintf ( '%s%s', handles.data.folder, filename );
+filename  = fullfile ( handles.data.folder, filename );
 
 taskdata  = load ( filename );
 
