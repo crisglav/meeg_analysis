@@ -2,9 +2,16 @@ clc
 clear
 close all
 
+% Adds the functions folders to the path.
+addpath( fullfile ( fileparts (pwd), 'functions' ) );
+addpath( fullfile ( fileparts (pwd), 'mne_silent' ) );
+
+% Read config from json file
+config = load_config( fullfile('..','..','config_s1.json') );
+
 % Sets the paths.
-config.path.sketch      = '../../data/sketch/';
-config.path.patt        = '*.mat';
+config.path.sketch = fullfile( config.path.project_root, 'data', 'sketch');
+config.path.patt      = '*.mat';
 
 config.channel.ignore   = {};
 
@@ -15,24 +22,19 @@ config.channel.hide     = 'zeros';
 % Sets the component removal configuration parameters.
 config.deEKG.comptype   = 2;
 
-
-% Adds the functions folders to the path.
-addpath ( sprintf ( '%s/functions/', fileparts ( pwd ) ) );
-addpath ( sprintf ( '%s/mne_silent/', fileparts ( pwd ) ) );
-
 % Adds, if needed, the FieldTrip folder to the path.
-myft_path
+myft_path ( config.path.ft_path )
 
 
 % Gets the list of subjects.
-files = dir ( sprintf ( '%s%s', config.path.sketch, config.path.patt ) );
+files = dir ( fullfile ( config.path.sketch, config.path.patt ) );
 
 % Goes through each file.
 for findex = 1: numel ( files )
     
     % Gets the file names.
     basename            = files ( findex ).name;
-    datafile            = sprintf ( '%s%s', config.path.sketch, basename );
+    datafile            = fullfile ( config.path.sketch, basename );
     
     % Loads the data.
     sketchdata          = load ( datafile, '-regexp', '^(?!erfdata|freqdata$).' );

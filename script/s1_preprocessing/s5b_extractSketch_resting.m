@@ -64,7 +64,7 @@ for sindex = 1: numel ( files )
     outnames = cell ( size ( config.channel ) );
     for findex = 1: numel ( config.channel.groups )
         channel = config.channel.groups { findex };
-        outnames { findex } = sprintf ( '%s%s_%s_%s.mat', config.path.sketch, taskinfo.subject, taskinfo.task, channel );
+        outnames { findex } = fullfile ( config.path.sketch, sprintf ( '%s_%s_%s.mat', taskinfo.subject, taskinfo.task, channel ) );
     end
     if all ( cellfun ( @(f) exist ( f, 'file' ) ~= 0, outnames ) ) && ~config.overwrite
         fprintf ( 1, 'Ignoring %s (already calculated).\n', msgtext );

@@ -2,23 +2,26 @@ clc
 clear
 close all
 
-config.path.segs = '../../data/segments/';
-config.path.patt = '*.mat';
+% Adds the functions folders to the path.
+addpath( fullfile ( fileparts (pwd), 'functions' ) );
+addpath( fullfile ( fileparts (pwd), 'mne_silent' ) );
+
+% Read config from json file
+config = load_config( fullfile('..','..','config_s1.json') );
+
+% Sets the paths.
+config.path.segs        = fullfile( config.path.project_root, 'data', 'segments');
+config.path.patt        = '*.mat';
 
 % Sets the filter band.
 config.filter.band    = [ 2 45 ];
 
-
-% Adds the functions folders to the path.
-addpath ( sprintf ( '%s/functions/', fileparts ( pwd ) ) );
-addpath ( sprintf ( '%s/mne_silent/', fileparts ( pwd ) ) );
-
 % Adds, if needed, the FieldTrip folder to the path.
-myft_path
+myft_path ( config.path.ft_path )
 
 
 % Gets the list of files.
-files = dir ( sprintf ( '%s%s', config.path.segs, config.path.patt ) );
+files = dir ( fullfile ( config.path.segs, config.path.patt ) );
 
 % Goes through each file.
 for findex = 1: numel ( files )
@@ -27,7 +30,7 @@ for findex = 1: numel ( files )
     filename    = files ( findex ).name;
     
     % Preloads the data.
-    epochdata   = load ( sprintf ( '%s%s', config.path.segs, filename ), 'subject', 'task', 'channel' );
+    epochdata   = load ( fullfile ( config.path.segs, filename ), 'subject', 'task', 'channel' );
     
     fprintf ( 1, 'Checking data for subject ''%s'', task ''%s'', channel group ''%s''.\n', epochdata.subject, epochdata.task, epochdata.channel );
     
@@ -35,7 +38,7 @@ for findex = 1: numel ( files )
     fprintf ( 1, '  Loading the data.\n' );
     
     % Loads the data.
-    epochdata   = load ( sprintf ( '%s%s', config.path.segs, filename ) );
+    epochdata   = load ( fullfile ( config.path.segs, filename ) );
     
     % Gets the real data.
     trialdata = epochdata.trialdata;

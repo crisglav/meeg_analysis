@@ -2,27 +2,30 @@ clc
 clear
 close all
 
-config.path.in   = '../../data/segments_split/';
-config.path.out  = '../../data/segments/';
+% Adds the functions folders to the path.
+addpath( fullfile ( fileparts (pwd), 'functions' ) );
+addpath( fullfile ( fileparts (pwd), 'mne_silent' ) );
+
+% Read config from json file
+config = load_config( fullfile('..','..','config_s1.json') );
+
+% Sets the paths.
+config.path.in   = fullfile( config.path.project_root, 'data', 'segments_split');
+config.path.out  = fullfile( config.path.project_root, 'data', 'segments');
 config.path.patt = '*.mat';
 
 % Sets the action when the task have already been processed.
-config.overwrite = false;
-
-
-% Adds the functions folders to the path.
-addpath ( sprintf ( '%s/functions/', fileparts ( pwd ) ) );
-addpath ( sprintf ( '%s/mne_silent/', fileparts ( pwd ) ) );
+config.overwrite = true;
 
 % Adds, if needed, the FieldTrip folder to the path.
-myft_path
+myft_path ( config.path.ft_path )
 
 
 % Creates and output folder, if needed.
 if ~exist ( config.path.out, 'dir' ), mkdir ( config.path.out ); end
 
 % Gets the list of files.
-files = dir ( sprintf ( '%s%s', config.path.in, config.path.patt ) );
+files = dir ( fullfile ( config.path.in, config.path.patt ) );
 
 % Initializes the list of subjects and conditions.
 infos     = struct ( 'subject', {}, 'task', {}, 'stage', {}, 'channel', {} );
@@ -35,7 +38,7 @@ for findex = 1: numel ( files )
     filename = files ( findex ).name;
     
     % Pre-loads the information.
-    info     = load ( sprintf ( '%s%s', config.path.in, filename ), 'subject', 'task', 'stage', 'channel' );
+    info     = load ( fullfile ( config.path.in, filename ), 'subject', 'task', 'stage', 'channel' );
     
     % Stores the information.
     infos ( findex ) = info;
@@ -75,13 +78,13 @@ for sindex = 1:numel ( subjects )
             info      = infos ( strcmp ( { infos.subject }, subject ) & strcmp ( { infos.task }, task ) & strcmp ( { infos.stage }, stage ) );
             channels  = strjoin ( { info.channel }, '+' );
             
-            if exist ( sprintf ( '%s%s_%s%s_%s.mat', config.path.out, subject, task, stage, channels ), 'file' ) && ~config.overwrite
+            if exist ( fullfile ( config.path.out, sprintf ( '%s_%s_%s_%s.mat', subject, task, stage, channels ) ) , 'file' ) && ~config.overwrite
                 fprintf ( 1, 'Ignoring %s (already processed).\n', msgtext );
                 continue
             end
             
             % Lists the files for the current subject and task.
-            files = dir ( sprintf ( '%s%s_%s%s_%s', config.path.in, subject, task, stage, config.path.patt ) );
+            files = dir ( fullfile ( config.path.in, sprintf ( '%s_%s_%s_%s', subject, task, stage, config.path.patt ) ) );
             
             if ~numel ( files )
                 fprintf ( 1, 'Ignoring %s (no files found).\n', msgtext );
@@ -101,12 +104,12 @@ for sindex = 1:numel ( subjects )
                 filename = files ( findex ).name;
                 
                 % Preloads the file.
-                info = load ( sprintf ( '%s%s', config.path.in, filename ), 'channel' );
+                info = load ( fullfile ( config.path.in, filename ), 'channel' );
                 
                 fprintf ( 1, '  Loading channel group ''%s''.\n', info.channel );
                 
                 % Loads the data.
-                filedata = myft_load ( sprintf ( '%s%s', config.path.in, filename ) );
+                filedata = myft_load ( fullfile ( config.path.in, filename ) );
                 
                 % Stores the data.
                 epochdatas { findex } = filedata;
@@ -218,7 +221,7 @@ for sindex = 1:numel ( subjects )
             epochdata.trialinfo = trialinfo;
             epochdata.trialdata = trialdata;
             
-            myft_save ( sprintf ( '%s%s_%s%s_%s', config.path.out, epochdata.subject, epochdata.task, epochdata.stage, epochdata.channel ), epochdata );
+            myft_save ( fullfile ( config.path.out, sprintf ( '%s_%s_%s_%s', epochdata.subject, epochdata.task, epochdata.stage, epochdata.channel ) ), epochdata );
         end
     end
 end

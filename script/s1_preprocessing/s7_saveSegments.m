@@ -2,13 +2,20 @@ clc
 clear
 close all
 
+% Adds the functions folders to the path.
+addpath( fullfile ( fileparts (pwd), 'functions' ) );
+addpath( fullfile ( fileparts (pwd), 'mne_silent' ) );
+
+% Read config from json file
+config = load_config( fullfile('..','..','config_s1.json') );
+
 % Sets the paths.
-config.path.sketch      = '../../data/sketch/';
-config.path.segs        = '../../data/segments_split/';
+config.path.sketch      = fullfile( config.path.project_root, 'data', 'sketch');
+config.path.segs        = fullfile( config.path.project_root, 'data', 'segments_split');
 config.path.patt        = '*.mat';
 
 % Sets the action when the task have already been processed.
-config.overwrite        = false;
+config.overwrite        = true;
 
 % Sets the component removal configuration parameters.
 config.deEOG.perform    = true;
@@ -16,7 +23,7 @@ config.deEOG.filter     = 10;
 config.deEOG.comptype   = 1;
 
 config.deEKG.perform    = true;
-config.deEKG.kalima     = false;
+config.deEKG.kalima     = true;
 config.deEKG.comptype   = 2;
 
 config.denoise.perform  = true;
@@ -34,25 +41,20 @@ config.fs               = 1000;
 % Creates and output folder, if needed.
 if ~exist ( config.path.segs, 'dir' ), mkdir ( config.path.segs ); end
 
-
-% Adds the functions folders to the path.
-addpath ( sprintf ( '%s/functions/', fileparts ( pwd ) ) );
-addpath ( sprintf ( '%s/mne_silent/', fileparts ( pwd ) ) );
-
 % Adds, if needed, the FieldTrip folder to the path.
-myft_path
+myft_path ( config.path.ft_path )
 
 
 % Gets the list of subjects.
-files = dir ( sprintf ( '%s%s', config.path.sketch, config.path.patt ) );
+files = dir ( fullfile ( config.path.sketch, config.path.patt ) );
 
 % Goes through each file.
 for findex = 1: numel ( files )
     
     % Gets the file names.
     basename            = files ( findex ).name;
-    datafile            = sprintf ( '%s%s', config.path.sketch, basename );
-    cleanfile           = sprintf ( '%s%s', config.path.segs,   basename );
+    datafile            = fullfile ( config.path.sketch, basename );
+    cleanfile           = fullfile ( config.path.segs,   basename );
     
     % Loads the data.
     sketchdata          = load ( datafile, '-regexp', '^(?!erfdata|freqdata$).' );
@@ -103,11 +105,11 @@ for findex = 1: numel ( files )
     trialclean          = cleaninfo.trial.type == 0;
     
     % Loads the clean trials' information from any othe channel group.
-    changroups = dir ( sprintf ( '%s%s_%s%s_*', config.path.sketch, sketchdata.subject, sketchdata.task, sketchdata.stage ) );
+    changroups = dir ( fullfile ( config.path.sketch, sprintf ( '%s_%s_%s_*', sketchdata.subject, sketchdata.task, sketchdata.stage ) ) );
     for cindex = 1: numel ( changroups )
         
         % Loads the clean trials information.
-        dummy = load ( sprintf ( '%s%s', config.path.sketch, changroups ( cindex ).name ), 'cleaninfo' );
+        dummy = load ( fullfile ( config.path.sketch, changroups ( cindex ).name ), 'cleaninfo' );
         
         % Adds the bad trials to the list.
         trialclean = trialclean & ( dummy.cleaninfo.trial.type == 0 );
@@ -352,5 +354,5 @@ for findex = 1: numel ( files )
     epochdata.trialdata = trialdata;
     
     % Saves the data.
-    myft_save ( sprintf ( '%s%s', config.path.segs, basename ), epochdata );
+    myft_save ( fullfile ( config.path.segs, basename ), epochdata );
 end
